@@ -33,24 +33,30 @@ class App extends Component {
     this.setState((state) => {
       const newList = state.cart.map((item) => {
         if (item.id === id) {
-          return Object.assign({}, item, { quantity: item.quantity + 1 });
+          return { ...item, quantity: item.quantity + 1 };
         } else {
           return item;
         }
       });
-
       return {
         cart: newList,
       };
     });
   };
-
   handleDecrementQuantity = (id) => {
-    // Your Code Here!
-    // Do the same as handleIncrementQuantity, but decrement it instead
-    // Remember that you should not decrement below zero!
+    this.setState((state) => {
+      const newList = state.cart.map((item) => {
+        if (item.id === id && item.quantity > 0) {
+          return { ...item, quantity: item.quantity - 1 };
+        } else {
+          return item;
+        }
+      });
+      return {
+        cart: newList,
+      };
+    });
   };
-
   handleCheckout = () => {
     alert(
       "Purchase Completed!" +
@@ -67,7 +73,11 @@ class App extends Component {
         <ul className="list">
           {this.state.cart.map((item) => (
             <li key={item.id}>
-              <Product your props here />
+              <Product
+                item={item}
+                onIncrementQuantity={this.handleIncrementQuantity}
+                onDecrementQuantity={this.handleDecrementQuantity}
+              />
             </li>
           ))}
         </ul>
@@ -75,12 +85,9 @@ class App extends Component {
           <label>
             <input
               type="checkbox"
-              defaultChecked={this.stateIncisOnMailingList}
+              defaultChecked={this.state.isOnMailingList}
               onChange={(event) =>
-                // Your code here!
-                // Use setState to update the flag in state for the checkbox
-                // Hint: use event.target.checked
-                this.setState()
+                this.setState({ isOnMailingList: event.target.checked })
               }
             />
             Sign me up for the mailing list!
